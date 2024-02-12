@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# verified time: 2024/1/15
+# verified time: 2024/2/12
 
 from config import *
 from requests import Session
@@ -10,7 +10,7 @@ class FanQie:
         super().__init__()  # 调用父类的初始化函数
         self.session = Session()  # 创建一个Session对象，并赋值给self.session
 
-    def search(self, keywords: str) -> list:
+    def search(self, keywords: str) -> list | str:
         """
         搜索书籍信息
 
@@ -22,13 +22,13 @@ class FanQie:
         """
         # 获得书本基本信息
         params = {
-            'aid': 13,
+            'aid': 1967,
             'q': keywords
         }
         book_list_info = self.session.get(search_url, params=params, headers=headers).json()
-        return book_list_info['data']['ret_data']
+        return 'ret_data' in book_list_info.keys() and book_list_info['data']['ret_data'] or '未配置cookie或者cookie失效'
 
-    def direct(self, book_id: str) -> list:
+    def direct(self, book_id: str) -> list | str:
         # 获取书本目录
         params = {
             'book_id': book_id,  # 书本ID
@@ -44,7 +44,7 @@ class FanQie:
             'os_version': '10',  # 操作系统版本
         }
         direc_list_info = self.session.get(directory_url, params=params, headers=headers).json()
-        return direc_list_info['data']['item_list']
+        return 'item_list' in direc_list_info['data'].keys() and direc_list_info['data']['item_list'] or '未配置cookie或者cookie失效'
 
     def content(self, item_id: str) -> str:
         """
@@ -66,9 +66,6 @@ class FanQie:
         }
         # 发送GET请求并解析响应内容为JSON格式
         content_info = self.session.get(content_url, params=params, headers=headers).json()
-        try:
             # 返回章节正文内容
-            return content_info['data']['content']
-        except:
-            # 返回错误信息，表示未配置cookie或者cookie失效
-            return '未配置cookie或者cookie失效'
+        return 'content' in content_info['data'].keys() and content_info['data']['content'] or '未配置cookie或者cookie失效'
+
