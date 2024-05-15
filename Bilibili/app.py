@@ -40,11 +40,11 @@ class GetSelf:
             0: True
         }
 
-    def sign_in(self) -> str:
-        if self.cookie is None:
-            return False
-        
         self.session.cookies = utils.cookiejar_from_dict(self.cookie)
+
+    def sign_in(self) -> str:
+        if self.session.cookies is None:
+            return False
 
         state: dict = self.session.request(**self.config.req_params).json()
 
@@ -97,7 +97,6 @@ class BilibiliRun:
     def run(self, session: Session, vedio_list: list[tuple]):
         asyncio.run(self.run_task(session, vedio_list))
 
-# 简单测试功能部分
 if __name__ == '__main__':
     session: Session = GetSelf('FILE:Cookie.txt').session
     poll = BilibiliRun()
