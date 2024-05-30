@@ -12,4 +12,4 @@ encoding = 'utf-8'
 # 目录api
 directory_url = 'https://novel.snssdk.com/api/novel/book/directory/list/v1/'
 # 正文api
-content_url = 'https://novel.snssdk.com/api/novel/book/reader/full/v1/'
+content_url = 'https://api.52loli.cc/content'
