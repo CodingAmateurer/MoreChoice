@@ -1,0 +1,10 @@
+*.pyc
+__pycache__
+.pdm-python
+src/
+tests/
+pyproject.toml
+.venv/
+pdm.lock
+Cookie.txt
+*.mp4

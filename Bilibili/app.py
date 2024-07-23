@@ -1,12 +1,16 @@
 import asyncio
+import logging
 
 from dataclasses import dataclass
 from requests import Session, utils
 from tqdm.rich import tqdm
 
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
+
 @dataclass
 class Config:
-    def __init__(self, url: str, method: str, headers: dict = None):
+    def __init__(self, url: str, method: str, headers: dict = {}):
         self.url = url
         self.method = method
 
@@ -15,7 +19,7 @@ class Config:
 				'referer': 'https://www.bilibili.com/',
 				'user-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
 				'accept': 'application/json, text/plain, */*'
-			} if headers is None else headers
+			} if headers == {} else headers
         self.req_params: dict = {
         'method': self.method,
         'url': self.url
@@ -42,16 +46,19 @@ class GetSelf:
 
         self.session.cookies = utils.cookiejar_from_dict(self.cookie)
 
-    def sign_in(self) -> str:
+    def __call__(self) -> bool:
         if self.session.cookies is None:
+            logging.error('Cookie未配置')
             return False
 
         state: dict = self.session.request(**self.config.req_params).json()
 
         if self.state_code_dict[state['code']]:
-            return f'UserName:{state["data"]["name"]}\nMid:{state["data"]["mid"]}'
+            logging.info(f'UserName: {state["data"]["name"]}, Mid: {state["data"]["mid"]}')
+            return True
         
-        return 'Cookie Error'
+        logging.error('Cookie无效')
+        return False
 
 class DownloadStrategy:
     def __init__(self, session: Session):
@@ -73,7 +80,7 @@ class DownloadStrategy:
             'fnval': fnval,
             'fourk': fourk
         }).json()
-        print(f'''画质:{quality}\n视频链接:{url_list['data']['durl'][0]['url']}\n视频大小:{url_list['data']['durl'][0]['size']/(2**20)}M''')
+        logging.info(f"Quality:{quality}, Url:{url_list['data']['durl'][0]['url']}, Size:{url_list['data']['durl'][0]['size']/(2**20)}M")
 
         process_bar = tqdm(total=url_list['data']['durl'][0]['size'], unit='iB', unit_scale=True,desc=f"Downloading {bvid}.mp4", ascii=True)
 
@@ -94,12 +101,14 @@ class BilibiliRun:
         with open(file_name, 'r+') as f:
             return [tuple(line.split()) for line in f.readlines()]
         
-    def run(self, session: Session, vedio_list: list[tuple]):
+    def __call__(self, session: Session, vedio_list: list[tuple]):
         asyncio.run(self.run_task(session, vedio_list))
 
+# 简单测试部分
 if __name__ == '__main__':
     session: Session = GetSelf('FILE:Cookie.txt').session
-    poll = BilibiliRun()
-    vedio_list = poll.load_vedio_list('vedio_list.txt')
+    GetSelf('FILE:Cookie.txt')()
+    # poll = BilibiliRun()
+    # # vedio_list = poll.load_vedio_list('vedio_list.txt')
     # vedio_list = [('BV1Qt421u7eb', 120), ('BV1KZ421j7N4', 120)]
-    poll.run(session, vedio_list)
+    # poll(session, vedio_list)
