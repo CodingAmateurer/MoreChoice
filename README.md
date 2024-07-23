@@ -1,25 +1,8 @@
-<h1 align="center">Elegant_finder</h1>
+<h1 align="center">MoreChoice</h1>
 
-<details>
-<summary>目录</summary>
-
-- [Elegant_finder](#Elegant_finder)
-    - [Change Log](#Change-Log)
-      - [v0.1.5 (2024/7/23)](#v015-2024773)
-      - [v0.1.4 (2024/1/15)](#v014-2024115)
-      - [v0.1.3 (2023/3/17)](#v013-2023317)
-      - [v0.1.2 (2023/3/13)](#v012-2023313)
-      - [v0.1.1 (2023/1/31)](#v011-2023131)
-      - [v0.1.0 (2023/1/30)](#v010-2023130)
-    - [Pixivel.reptile](#Pixivelreptile)
-    - [FanQie.Novel.reptile](#FanQieNovelreptile)
-    - [Proxy.reptile](#Proxyreptile)
-    - [Bilibili.reptile](#Bilibilireptile)
-       - [视频下载](#视频下载)
-    - [其他爬虫](#其他爬虫)
-    - [LICENSE](#LICENSE)
-
-</details>
+# Python环境配置
+- python版本: `3.10.*` (鉴于issue里面的某些问题, 建议自己去搜索一下或询问ai也是一种解决办法, 至于运行, 子文件夹中的`readme.md`应该会写)
+- 库包: `requests`, `tqdm`, `rich`
 
 ## Change Log
 ### v0.1.5 (2024/7/23)
@@ -43,7 +26,7 @@
 # 成品展示
 ## BiliBili视频下载器v2.1
 这是通过**Bilibili.reptile**做出来的一个成品, 下面的`fix_m4s`算是针对电脑客户端下载的情况.  
-> 下载地址: [releases/tag/v2.1 ](https://github.com/UnAbuse/reptile.inclued/releases/tag/v2.1)  
+> 下载地址: [releases/tag/v2.1 ](/releases/tag/v2.1)  
 > 通过`pyside6`进行开发, 关于`m3u8`的直播录制暂时没有实现.   
 > 最新通过`inno setup`进行二次封装.  
 > 支持扫码登录, 优化了**多线程下载**的思路.
