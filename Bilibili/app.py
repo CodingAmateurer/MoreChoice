@@ -6,7 +6,7 @@ from requests import Session, utils
 from tqdm.rich import tqdm
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
+logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(asctime)s %(message)s')
 
 @dataclass
 class Config:
@@ -48,16 +48,16 @@ class GetSelf:
 
     def __call__(self) -> bool:
         if self.session.cookies is None:
-            logging.error('Cookie未配置')
+            logger.error('Cookie未配置')
             return False
 
         state: dict = self.session.request(**self.config.req_params).json()
 
         if self.state_code_dict[state['code']]:
-            logging.info(f'UserName: {state["data"]["name"]}, Mid: {state["data"]["mid"]}')
+            logger.info(f'UserName: {state["data"]["name"]}, Mid: {state["data"]["mid"]}')
             return True
         
-        logging.error('Cookie无效')
+        logger.error('Cookie无效')
         return False
 
 class DownloadStrategy:
@@ -80,7 +80,7 @@ class DownloadStrategy:
             'fnval': fnval,
             'fourk': fourk
         }).json()
-        logging.info(f"Quality:{quality}, Url:{url_list['data']['durl'][0]['url']}, Size:{url_list['data']['durl'][0]['size']/(2**20)}M")
+        logger.info(f"Quality:{quality}, Url:{url_list['data']['durl'][0]['url']}, Size:{url_list['data']['durl'][0]['size']/(2**20)}M")
 
         process_bar = tqdm(total=url_list['data']['durl'][0]['size'], unit='iB', unit_scale=True,desc=f"Downloading {bvid}.mp4", ascii=True)
 
